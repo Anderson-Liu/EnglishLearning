@@ -1,0 +1,484 @@
+1
+00:00:00,240 --> 00:00:16,170
+嘿  我是Leigh Halliday 我今天有一个小视频给大家看  如果你昨天在浏览Twitter或者上网  你会做出React  你可能会看到消息说下一个版本的React出现了一个新的概念叫做Hook
+Hey, it's Leigh Halliday and I've got a little video to show you today, and if you were on Twitter, the Internet at all yesterday and you're going to react, you probably saw that the next version of React is going to have something new called Hooks.
+
+2
+00:00:16,170 --> 00:00:21,390
+所以我想制作一个简短的视频来告诉你如何开始使用它们
+So I wanted to produce a quick video that just shows you how you can start using them.
+
+3
+00:00:21,390 --> 00:00:30,750
+虽然它目前还处于alpha阶段  但是玩一玩还是很有意思的  我们将通过重构一个含state的组件来体验使用Hook
+They're obviously just an alpha right now, but it's fun to play around with them, and we're going to get a rough factor, a component with some state to use hooks instead.
+
+4
+00:00:30,750 --> 00:00:31,740
+好了 接下来我们直接看例子
+So let's take a look
+
+5
+00:00:33,210 --> 00:00:40,920
+我这里有一个小应用  它是一个更大的应用程序的一部分  所以它只是一个开始
+So I've got this little app here, and it's meant to be part of a larger app, so it is just the beginning of it.
+
+6
+00:00:40,920 --> 00:00:43,380
+但基本上它有一个表格  你可以输入
+But basically it's got a form where you can enter in
+
+7
+00:00:43,380 --> 00:00:46,410
+一个Github token  然后它最终会获取
+a github token, and then it will eventually pull
+
+8
+00:00:46,410 --> 00:01:01,770
+所有你starred的代码仓库  你可以在这里的小表单输入token 它会把token缓存到Session Storage中 从而当你刷新页面时  你不需要再输入一遍token
+ your starred repositories down from using the GraphQL API so it's got a little form you can enter that in and it will save your token in Session Storage that when you refresh the page, you don't have to re type it in every time
+
+9
+00:01:03,240 --> 00:01:05,970
+让我们来看看这是怎么做到的
+Let's take a look at how that's done then.
+
+10
+00:01:05,970 --> 00:01:16,380
+在这个小应用中首先要注意的是 这是一个 create react app  但是我已经把React和React Dom的版本更新为next 这样他们就可以访问这些Alpha特性了
+So first thing to note in this little app is that adds a crate react app, but I've bumped up the react and react on versions to next so that they can have access to the Alpha features
+
+11
+00:01:17,370 --> 00:01:20,310
+然后让我们来看看应用程序组件
+And then let's take a look at the app component
+
+12
+00:01:21,180 --> 00:01:22,110
+现在我们来到这里
+So you come in here
+
+13
+00:01:22,110 --> 00:01:28,620
+它是一个基于类的组件 并且有一个state叫token  也就是我说过的
+It is a class-based component which has some state namely just the token that I talked about
+
+14
+00:01:30,090 --> 00:01:38,820
+我们将在我们的类组件组件中使用一些生命周期函数 比如componentDidMount
+So we're going to use some of the the lifecycle functions here inside of our class component componentDidMount.
+
+15
+00:01:38,820 --> 00:01:50,250
+这是当我在我输入token后第一次载入页面时  它会从Session Storage中读取值并设置token state
+And that's so that when I load the page for that for the first time after I've previously entered in my token, it will set the token state from Session Storage.
+
+16
+00:01:50,250 --> 00:01:56,400
+所以我们只需要通过设置Session Storage来获取值 也就是token 这样用户就不必每次都重新输入token
+So we'll just set session stores to get item and will grab the token so that the user doesn't have to re-enter it every time
+
+17
+00:01:57,810 --> 00:02:03,780
+这里有另一个函数叫setToken  它接收token  它做了两件事
+Got another function here called setToken, which receives the token it does two things with it.
+
+18
+00:02:03,780 --> 00:02:11,820
+它将这个token放入Session Storage中  这样下次加载页面时的情况  它会更新这里的state
+It puts that token into Session Storage, so that is there for the next time You load the page and it also updates the state right here.
+
+19
+00:02:12,960 --> 00:02:20,610
+所以在render函数中  我们从state中获取了token  然后它现在变成了一个值了
+So down in our render function, we grabbed the token from state and then right now it's a value.
+
+20
+00:02:20,610 --> 00:02:28,320
+启动这个应用程序  正如我提到的  它只是返回一个携带h1的div  如果它的token值不为空  我们最终就会显示那个token
+Started the app, as I mentioned so it just returns a div with an h1, and if it has a token, we just show that token eventually.
+
+21
+00:02:28,320 --> 00:02:32,970
+在这里  我们写了更多的代码逻辑 来使用这个token执行GraphQL查询
+This is where we put more logic to to make a GraphQL query using this token.
+
+22
+00:02:32,970 --> 00:02:34,860
+但就目前而言  它是这样的
+But for now it is what it is
+
+23
+00:02:35,730 --> 00:02:47,280
+否则  (这里的代码)意味着 token没有值的话 我们将渲染一个表单 并且我们把setToken函数也传进表单里 这样当有用户往表单里输入token的时候就可以执行setToken
+Otherwise, meaning we don't have a token, we use the token form and we pass along the setToken function that the form can call when, when the user enters that token into the form
+
+24
+00:02:48,300 --> 00:02:51,810
+我们快速地看一下这个
+So we just take a quick look at this.
+
+25
+00:02:51,810 --> 00:02:55,560
+它也是一个基于类的组件  它有一个表单
+It is also a class based component, which has a form
+
+26
+00:02:57,150 --> 00:03:02,700
+它有一个Input容器  上面有一个ref参数  这样我就可以从通过它获取值了
+It's got one input here with a ref on it so that I can grab the the value from it.
+
+27
+00:03:02,700 --> 00:03:09,750
+当你按下enter时  它就会提交表单  并调用onSubmit事件函数
+And when you hit enter, which submits the form, it's going to call the on submit event function.
+
+28
+00:03:09,750 --> 00:03:15,420
+然后我们这里(preventDefault)是为了阻止表单的默认提交事件
+And then what we do here is to prevent the actual form from submitting using events to prevent default
+
+29
+00:03:17,280 --> 00:03:23,430
+我们获取并执行了这个setToken功能 它是从应用程序中传递过来的
+We grabbed that setToken function that was passed down from the app right here
+
+30
+00:03:24,840 --> 00:03:38,280
+然后  在从Input ref获取token值之后  只要一有输入  我们就会调用setToken函数  并传递token  如果你还记得的话
+And then, after grabbing the token value from the input ref as long as they entered one, we will call that setToken function, passing the token up which, if you remember back,
+
+31
+00:03:38,280 --> 00:03:39,120
+token 被传递到了这里
+here token arise.
+
+32
+00:03:39,120 --> 00:03:43,560
+它会被放入到Session Storage中 然后也会被放到state中
+It gets put in Session Storage and then that gets put into state as well
+
+33
+00:03:45,000 --> 00:03:47,130
+所以如果我来到这里
+So if I just come into here in AIA,
+
+34
+00:03:50,160 --> 00:03:54,360
+删除我的Session Storage  清除它 刷新
+Remove my Session Storage, clear it out, refresh.
+
+35
+00:03:54,360 --> 00:03:57,120
+它(表单)现在是空的 然后我输入token  敲回车提交表单
+It's not here I entered in, and I hit enter to submit the form.
+
+36
+00:03:57,120 --> 00:04:01,440
+现在它来到了这里,不管我再刷新多少次都在这里
+it's now in here as many times as I refresh
+
+37
+00:04:02,310 --> 00:04:09,120
+让我们快速地从类基础组件转到function 组件
+So let's refer back to this quickly from a class-base component to functional component.
+
+38
+00:04:09,120 --> 00:04:24,870
+以前  如果你有一个function 组件  你就不能useState 因为没有地方能放那个state  一般来说  你使用function组件更像是pure component风格  它们所做的就是接收props
+And previously, if you had a functional component, you weren't really able touseState with it because there was nowhere to put that state, as typically, you'd use functional components more of like a pure component style where all they do is received some props
+
+39
+00:04:24,870 --> 00:04:29,190
+然后渲染一些东西并显示出来
+and render some something to display.
+
+40
+00:04:29,190 --> 00:04:31,170
+一些state从它的父组件那里继承了下来
+Some state passed down from its parent
+
+41
+00:04:32,010 --> 00:04:37,050
+但是现在我们可以使用function 组件了 它们有自己的state
+But now we can use functional components which essentially have their own state.
+
+42
+00:04:37,050 --> 00:04:41,910
+所以我们要做的是  最终我们会把整个东西都删掉  但是我们现在就把它放在这里
+So what we're going to do is eventually we'll just delete this whole thing, but we'll keep it here for now.
+
+43
+00:04:42,930 --> 00:04:50,430
+我们要导出默认函数  我们把它叫做同样的东西
+We're going to export default function and we'll call it the same thing up.
+
+44
+00:04:50,430 --> 00:04:54,870
+这有点让人抓狂因为我必须导出默认值  但是我们会把它清除掉
+And it's freaking out a little bit because I have to export defaults, but we'll clean that up
+
+45
+00:04:55,770 --> 00:05:01,350
+我们要做的第一件事是  我们想要一个具有token值的state
+So the first thing we want to do is we do want some state with a token value.
+
+46
+00:05:01,350 --> 00:05:05,460
+所以我们要用的是一个新的Hook叫做useState
+So what we'll use instead is a new hook called useState
+
+47
+00:05:07,800 --> 00:05:11,760
+所以当你调用它时useState
+SouseState when you call it
+
+48
+00:05:13,680 --> 00:05:19,170
+第一次添加函数时  它会调用useState以及你传入的内容
+The first time this add function is called it's gonna call useState and what you pass into.
+
+49
+00:05:19,170 --> 00:05:27,300
+useState函数应该是它的初始值  它是它的一半  所以它就像我们设置它的地方
+The useState functionThe should be the initial value that it's half that it has, so it's like up here where we set it to know.
+
+50
+00:05:27,300 --> 00:05:31,170
+但是后来在组件中增加了
+But then later in componentDidMonut.
+
+51
+00:05:31,170 --> 00:05:33,180
+我们将它设置为Session Storage
+We set it to the Session Storage
+
+52
+00:05:34,170 --> 00:05:39,720
+这里的token值  我们可以做的就是抓住这条线
+Token value here, so what we can do above is actually just grab this little line here.
+
+53
+00:05:40,590 --> 00:05:52,500
+把它放在这里  这样第一次它加载它从Session Storage器中获取token并将它作为初始值  它返回的是两个东西的数组
+And put it here so that the first time it loads its going to grab the token from Session Storage and use that as its initial value and what this returns is an array of two things.
+
+54
+00:05:52,500 --> 00:05:56,130
+但是我们也可以用破坏来去除这些
+But we can use destructuring too, to strip those out.
+
+55
+00:05:56,130 --> 00:06:03,480
+所以在这个数组里的第一件事  我们将会是在这个state属性中安装的任何东西
+So the first thing in this array, we'll be whatever is returned in installed in this state property.
+
+56
+00:06:03,480 --> 00:06:06,120
+这里  我们在这里存储token
+So where it, we're storing the token here.
+
+57
+00:06:06,120 --> 00:06:07,350
+所以我们称这个为token
+So we'll call this token
+
+58
+00:06:08,610 --> 00:06:22,800
+第二个返回的是一个与这个setToken函数非常相似的函数  当你调用它时  当你传递一个值时  它会将那个值放入state  所以我们会
+The second thing that returns is a function very similar to this setToken function here, where, whenever you call it and you pass it a value, it's gonna put that value into the state, so we will
+
+59
+00:06:24,150 --> 00:06:32,220
+调用那个setToken  因此你不需要在任何地方定义这个函数它会被欧盟国家发现和返回
+Call that setToken, so you don't need to define this function anywhere It gets to find and returned by EU state
+
+60
+00:06:34,470 --> 00:06:39,330
+好了  现在我得到了token  我可以简单地返回
+OK, so now I've got the token and I can simply return
+
+61
+00:06:43,920 --> 00:06:49,020
+这里的代码  我有token  它来自于useState
+This code here, so I've got token, which came fromuseState.
+
+62
+00:06:49,020 --> 00:06:50,670
+如果它在那里  我就会成为token
+If it's there, I shall the token.
+
+63
+00:06:50,670 --> 00:06:53,430
+否则我将呈现token形式
+Otherwise I render the token form.
+
+64
+00:06:53,430 --> 00:06:56,370
+但请注意这里
+But just keep an eye here.
+
+65
+00:06:56,370 --> 00:06:58,980
+我们不再在class里了了  所以不再是这个了
+We're not in a class anymore, so there's no longer this.
+
+66
+00:06:58,980 --> 00:07:02,280
+它只是一个局部变量  所以我把它移除
+It's just a local variable from here, so I just remove that
+
+67
+00:07:04,470 --> 00:07:09,090
+好的  让我来注释一下  我们看看它是否有效
+Okay, so let me just comment that out, and we'll see if it works
+
+68
+00:07:11,100 --> 00:07:13,170
+好吧  似乎有效
+OK seems to be working.
+
+69
+00:07:13,170 --> 00:07:16,020
+它看到了一个session的加载
+It saw loading from a session.
+
+70
+00:07:16,020 --> 00:07:22,650
+Storage把变量放在这里的函数里  一切看起来都很好
+Storage is putting the the variable here in the function here, and everything looks to be good
+
+71
+00:07:24,360 --> 00:07:31,020
+接下来我们要讲的是当我们设置token时  我们不只是想要放入state
+So next thing we need to cover is well what happens when we set the token we don't just want to put in state.
+
+72
+00:07:31,020 --> 00:07:32,370
+我们还想做点别的
+We also want to do something else.
+
+73
+00:07:32,370 --> 00:07:36,150
+我们想要有一些其他的效果
+We wanted to have some other effect I'm in.
+
+74
+00:07:36,150 --> 00:07:36,780
+就我们这个例子来说
+In our case
+
+75
+00:07:36,780 --> 00:07:40,410
+我们要的副作用就是把token同时更新到Session
+the effect is that we want to put the token also into Session
+
+76
+00:07:40,410 --> 00:07:40,920
+Storage
+Storage
+
+77
+00:07:41,910 --> 00:07:48,300
+所以现在你可以使用另一个Hook它是在下一个版本的React叫做useEffect
+So for now you can use another hook that is provided in the next version of react called useEffect
+
+78
+00:07:49,170 --> 00:08:02,010
+本质上  useEffect就像是componentDidMount  它会因为state更新而被调用一次  这段代码会呈现
+And essentially, what useEffect is is it's almost like a componentDidMonut, and it will get called one sort of every time that this code renders because of a state change
+
+79
+00:08:02,910 --> 00:08:04,980
+所以我们用一个事实
+So we do is, we call use a fact
+
+80
+00:08:05,910 --> 00:08:11,850
+在这里放一些额外的空间你给它一个函数看到这个通过一个箭头函数
+Put some extra space in here and you give it a function saw this pass an arrow function here
+
+81
+00:08:12,780 --> 00:08:17,070
+我们在箭头函数里要做的就是取这个记号
+And what we want to do in our arrow function is take this token.
+
+82
+00:08:17,070 --> 00:08:19,830
+这是在state下写入Session Storage器
+That's in state and write it to Session Storage
+
+83
+00:08:20,940 --> 00:08:33,240
+现在我已经重新创建了所有的类基础组件  使用function 组件和新的两个Hook 函数提供了React
+So now that I've essentially recreated all of this class base component, using a functional component and the new twos are hook, functions provided react.
+
+84
+00:08:33,240 --> 00:08:39,240
+ 我们可以在这里去掉组件因为我们不再使用它了  并清理下面的代码
+We can chop off component here since we're not using that anymore and clean up our code below
+
+85
+00:08:40,650 --> 00:08:42,090
+我们要确保它是有效的
+And we'll just make sure it's working
+
+86
+00:08:43,230 --> 00:08:48,030
+再一次  我要清除我的Session Storage  这样就可以重新输入这个
+So once again, I'm just going to clear out my Session Storage, so they can reenter this
+
+87
+00:08:49,620 --> 00:08:52,470
+刷新!  现在它已经没有了
+So refreshed this, it doesn't have it anymore.
+
+88
+00:08:52,470 --> 00:08:57,000
+我输入了表单  现在它在这里
+I entered in submit the form, and now it's here
+
+89
+00:08:58,920 --> 00:09:18,330
+这就是你如何从拥有一个带有state的类基组件的组件开始  然后使用下一个版本的React中提供的新的Hook函数将其转换为function 组件  如果你在未来观察这个功能  我相信它会在React16.7中出现
+And this is how you go from having a component with a class base component with state and switch that up to a functional component using the New Hook functions provided in the the next version of React, which if you're watching this in the future, I believe it will be in react
+
+90
+00:09:17,940 --> 00:09:18,330
+Version.
+
+91
+00:09:18,330 --> 00:09:23,400
+不过现在还是Alpha状态 希望你喜欢它 
+Sixteen point seven, which is now in alpha cool, hope you enjoyed it, 
+
+92
+00:09:23,400 --> 00:09:26,430
+我相信我们会找到很多不同的方法来使用这些Hook
+I'm sure we're going to find many different ways to use these hooks.
+
+93
+00:09:26,430 --> 00:09:33,420
+我看到过Michael的一些东西  他创造了mobx和immer
+I've seen stuff coming down from from Michael who created a mobx and immer.
+
+94
+00:09:33,420 --> 00:09:35,760
+然后 一些其他
+and some of the other.
+
+95
+00:09:35,760 --> 00:09:46,320
+维护着开源库的人  我觉得它会被用在任何地方  它可能整合其他东西  就像是MobX或者是Redux甚至是routers 让routers更
+people that have open source libraries, I feel like it's gonna be used anywhere, and it's probably going to make integrating things like mob backs are redux, or even routers like reach router,
+
+96
+00:09:46,320 --> 00:09:49,350
+容易简单 希望你喜欢  并拥有美好的一天
+a lot easier. Hope you enjoyed and have a great day.
+
+97
+00:09:49,350 --> 00:09:49,740
+保重
+Take care.
+
